@@ -141,39 +141,29 @@ sample.addEventListener("click", () => {
     playbtn.classList.remove("playing");
 })
 
-if (navigator.mediaDevices.getUserMedia) {
-    const constraints = { audio: true };
-    let chunks = [];
-    let onSuccess = function(stream) {
-      const mediaRecorder = new MediaRecorder(stream);
-  
-      record.onclick = function() {
-        mediaRecorder.start();
-        record.style.background = "red";
-        record.textContent = "recording";
-      }
-  
-      stop.onclick = function() {
-        mediaRecorder.stop();
-        record.style.background = "lightcoral";
-        record.textContent = "record here";
-      }
-  
-      mediaRecorder.onstop = function(e) {
+//recording 
+const start = async () => {
+    const stream = await navigator.mediaDevices.getDisplayMedia(
+        {
+            video: {
+                mediaSource: "screen",
+            },
+    });
+    const data = [];
+    const mediaRecorder = new MediaRecorder(stream);
+
+    mediaRecorder.ondataavailable = (e) => {
+        data.push(e.data);
+    };
+    mediaRecorder.start();
+
+    mediaRecorder.onstop = (e) => {
         const blob = new Blob(chunks, { 'type' : 'audio/ogg; codecs=opus' });
         chunks = [];
         const audioURL = window.URL.createObjectURL(blob);
         song = audioURL;
-      }
-      mediaRecorder.ondataavailable = function(e) {
-        chunks.push(e.data);
-      }
     }
-    let onError = function(err) {
-        alert("something went wrong")
-    }
-    navigator.mediaDevices.getUserMedia(constraints).then(onSuccess, onError);
-} 
+};
     
 stop.addEventListener("mousedown", () => {
     stop_record.style.backgroundColor = "blue";
@@ -182,3 +172,4 @@ stop.addEventListener("mousedown", () => {
 stop.addEventListener("mouseup", () => {
     stop_record.style.backgroundColor = "lightskyblue";
 })
+

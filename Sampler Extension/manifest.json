@@ -6,6 +6,19 @@
 
     "action": {
         "default_popup": "../html/index.html"
-    }
+    },
+
+    "permissions": [
+        "activeTab",
+        "contextMenus",
+        "storage",
+        "scripting"
+    ],
+
+    "host_permissions": [
+        "<all_urls>"
+    ]
+
+
 
 }  
